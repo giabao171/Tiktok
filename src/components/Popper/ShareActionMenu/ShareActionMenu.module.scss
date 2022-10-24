@@ -1,0 +1,32 @@
+.menu-popper {
+    padding: 8px 0;
+    overflow-y: auto;
+    width: 280px;
+    max-height: 448px;
+}
+
+.menu-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 100%;
+    cursor: pointer;
+
+    button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}

@@ -1,0 +1,29 @@
+.wrapper {
+    width: 356px;
+    // width: 240px;
+    min-height: 100px;
+    height: 650px;
+    border-color: #ccc;
+    padding: 20px 0 26px 8px;
+    margin-left: -18px;
+    position: fixed;
+    // height: 1000px;
+    overflow-y: auto;
+    z-index: 10;
+    // left: 10px;
+}
+
+html ::-webkit-scrollbar {
+    border-radius: 0px;
+    width: 4px;
+}
+
+html *::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
+}
+
+html ::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background-color: rgba(0, 0, 0, 0);
+}

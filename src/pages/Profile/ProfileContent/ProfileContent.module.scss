@@ -1,0 +1,145 @@
+.wrapper {
+    padding: 32px 24px;
+
+    --font-family: SofiaPro, Arial, Tahoma, PingFangSC, sans-serif;
+}
+
+.acount-desc {
+    position: relative;
+    max-width: 624px;
+    margin-bottom: 20px;
+}
+
+.acount-view {
+    display: flex;
+}
+
+.avatar {
+    width: 116px;
+    height: 116px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+// .number-desc {
+//     display: inline-block;
+// }
+
+.acount-name {
+    margin-left: 20px;
+
+    p {
+        font-family: var(--font-family);
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 25px;
+        text-overflow: ellipsis;
+        height: 25px;
+        overflow: hidden;
+        max-width: 450px;
+        white-space: nowrap;
+    }
+
+    .btn {
+        margin-top: 16px;
+        width: 208px;
+    }
+
+    .edit-btn {
+        margin-top: 16px;
+        border-radius: 4px;
+    }
+}
+
+.nick-name {
+    display: inline-block;
+    h2 {
+        max-width: 396px;
+        font-family: var(--font-family);
+        font-weight: 700;
+        font-size: 32px;
+        line-height: 38px;
+        padding-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+        white-space: nowrap;
+
+        .check-icon {
+            margin-left: 5px;
+            color: rgb(32, 213, 236);
+            font-size: 18px;
+        }
+    }
+}
+
+.number-desc {
+    margin-top: 22px;
+    strong {
+        color: rgba(22, 24, 35, 1);
+        font-family: var(--font-family);
+        font-size: 18px;
+        line-height: 25px;
+    }
+
+    span {
+        color: rgba(22, 24, 35, 0.75);
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 15px;
+        line-height: 22px;
+        display: inline-block;
+        margin-left: 6px;
+        margin-right: 20px;
+    }
+}
+
+.bio {
+    text-align: left;
+    color: rgba(22, 24, 35, 1);
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    white-space: pre-line;
+    margin-top: 10px;
+}
+
+.link {
+    margin-top: 5px;
+    cursor: pointer;
+
+    a {
+        font-family: var(--font-family);
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 22px;
+        padding-left: 2px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &:hover a {
+        text-decoration: underline;
+    }
+}
+
+.share-btn {
+    position: absolute;
+    top: 11px;
+    cursor: pointer;
+    right: 0px;
+}
+
+.more-btn {
+    position: absolute;
+    top: 11px;
+    cursor: pointer;
+    right: -30px;
+}
+
+.video-of-acount {
+    // background-color: rgba(0, 0, 0, 0.544);
+    height: 100px;
+}

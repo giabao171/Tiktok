@@ -1,0 +1,9 @@
+video {
+    border-radius: 10px;
+}
+
+.square {
+    video {
+        border-radius: 0 !important;
+    }
+}

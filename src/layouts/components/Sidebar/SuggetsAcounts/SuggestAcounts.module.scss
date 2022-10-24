@@ -1,0 +1,95 @@
+.wrapper {
+    position: relative;
+    padding: 16px 0;
+    margin-top: 10px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        top: 0;
+        height: 1px;
+        background: rgba(22, 24, 35, 0.12);
+        -webkit-transform: scaleY(0.5);
+        -moz-transform: scaleY(0.5);
+        -ms-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+}
+
+.label {
+    padding: 0 8px;
+    margin-bottom: 8px;
+    font-size: 1.6rem;
+    line-height: 20px;
+    font-weight: 600;
+    color: rgba(22, 24, 35, 0.75);
+}
+
+// Acount item
+.acount-wrapper {
+    display: flex;
+    height: 48px;
+    padding: 8px;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.name {
+    display: flex;
+}
+
+.info {
+    margin-left: 5px;
+}
+
+.name h4 {
+    font-family: 'IBM Plex Sans', Arial, Tahoma, var(--font-family), sans-serif !important;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+    margin-top: -2px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.check-icon {
+    font-size: 14px;
+    color: rgb(32, 213, 236);
+    margin-left: 4px;
+}
+
+.usename {
+    color: rgba(22, 24, 35, 0.75);
+    font-family: 'IBM Plex Sans', var(--font-family), Arial, Tahoma, sans-serif !important;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    max-width: 260px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.more-btn {
+    color: rgb(254, 44, 85);
+    font-family: 'IBM Plex Sans', var(--font-family), Arial, Tahoma, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    margin-left: 10px;
+    // margin-top: 10px;
+    cursor: pointer;
+}
