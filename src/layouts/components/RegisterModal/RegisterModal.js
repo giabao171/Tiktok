@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import className from 'classnames/bind';
-import styles from './LoginModal.module.scss';
+import styles from './RegisterModal.module.scss';
 import Button from '~/Button/Button';
 import { CloseIcon, NextIcon, PrevIcon } from '~/components/icons/Icons';
 import * as LoginUser from '~/services/Auth/Login';
 import { useHook } from '~/hooks/useHook';
+import images from '~/assets/images';
+import * as registerUser from '~/services/Auth/Register';
+
 const cx = className.bind(styles);
 
-const LoginModal = () => {
-    const { currentUser, setcurrentUser, setShowLogin, setLogin, setshowRegister } = useHook();
+const RegisterModal = () => {
+    const { currentUser, setcurrentUser, setShowLogin, setshowRegister } = useHook();
 
-    const [formValue, setFormValue] = useState({ email: '', password: '' });
+    const [formValue, setFormValue] = useState({ type: 'email', email: '', password: '' });
     const [formError, setFormError] = useState({});
     const [loginDisabled, setLoginDisabled] = useState(false);
 
@@ -43,14 +46,9 @@ const LoginModal = () => {
         setFormError(validate(formValue));
     };
 
-    const showRegister = () => {
-        setshowRegister(true);
-        setShowLogin(false);
-    };
-
-    // useEffect(() => {
-    //     console.log(formValue);
-    // }, [formValue]);
+    useEffect(() => {
+        console.log(formValue);
+    }, [formValue]);
 
     useEffect(() => {
         formValue.email && formValue.password ? setLoginDisabled(false) : setLoginDisabled(true);
@@ -60,10 +58,15 @@ const LoginModal = () => {
         e.preventDefault();
         try {
             const user = formValue;
-            const result = await LoginUser.login(user);
-            setcurrentUser(result);
-            // console.log(currentUser);
-            setShowLogin(false);
+            const res = await registerUser.register(user);
+            const loginValue = {
+                email: formValue.email,
+                password: formValue.password,
+            };
+            const currentUs = await LoginUser.login(loginValue);
+            setcurrentUser(currentUs);
+            setshowRegister(false);
+            return res;
         } catch (error) {
             console.log(error);
         }
@@ -77,15 +80,15 @@ const LoginModal = () => {
                 <Button className={cx('back-btn')}>
                     <PrevIcon />
                 </Button>
-                <Button className={cx('close-btn')} onClick={() => setShowLogin(false)}>
+                <Button className={cx('close-btn')} onClick={() => setshowRegister(false)}>
                     <CloseIcon />
                 </Button>
                 <form className={cx('form-login')} onSubmit={(e) => handleSubmit(e)}>
-                    <div className={cx('login-title')}>Log in</div>
+                    <div className={cx('login-title')}>Sign in</div>
                     <div className={cx('description')}>
                         Email
                         <a href="/" className={cx('another-login')}>
-                            Log in with email or username
+                            Sign in with email or username
                         </a>
                     </div>
                     <div className={cx('username-group', 'ip-group')}>
@@ -118,13 +121,15 @@ const LoginModal = () => {
                     </div>
                     <p className={cx('error')}>{formError.password}</p>
                     <Button type="submit" primary disabled={loginDisabled} className={cx('login-btn')}>
-                        Log in
+                        Create Acount
                     </Button>
                 </form>
+                <div className={cx('logo-desc')}>
+                    <img src={images.logo} />
+                </div>
                 <div className={cx('footer')}>
                     <div className={cx('signup-part')}>
-                        <p>Don’t have an account?</p>
-                        <strong onClick={showRegister}>Sign up</strong>
+                        <p>Hope you have a great Time</p>
                     </div>
                 </div>
             </div>
@@ -132,4 +137,4 @@ const LoginModal = () => {
     );
 };
 
-export default LoginModal;
+export default RegisterModal;

@@ -19,4 +19,10 @@ export const post = async (path, data = {}, headers = {}) => {
     return response.data;
 };
 
+export const del = async (path, headers = {}) => {
+    const response = await httpRequest.delete(path, headers);
+
+    return response.data;
+};
+
 export default httpRequest;

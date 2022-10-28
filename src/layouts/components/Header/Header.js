@@ -26,6 +26,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import config from '~/configs';
 import { useHook } from '~/hooks/useHook';
 import LoginModal from '../LoginModal/LoginModal';
+import RegisterModal from '../RegisterModal/RegisterModal';
 import * as LogoutUser from '~/services/Auth/Logout';
 
 const cx = className.bind(styles);
@@ -86,7 +87,8 @@ const Header = () => {
         },
     ];
 
-    const { largeHeader, setLargeHeader, setcurrentUser, currentUser, showLogin, setShowLogin } = useHook();
+    const { largeHeader, setLargeHeader, setcurrentUser, currentUser, showLogin, setShowLogin, showRegister } =
+        useHook();
     const [style, setStyle] = useState({});
     const navigate = useNavigate();
 
@@ -104,7 +106,7 @@ const Header = () => {
             }
         }
         if (menuItem.title === 'View profile') {
-            navigate(`@${currentUser.data.nickname}`);
+            navigate(`${config.routes.home}@${currentUser.data.nickname}`);
         }
     };
 
@@ -178,6 +180,8 @@ const Header = () => {
                 </div>
             </div>
             {showLogin && <LoginModal />}
+            {showRegister && <RegisterModal />}
+            {/* <RegisterModal /> */}
         </header>
     );
 };

@@ -1,0 +1,118 @@
+.comment-item {
+    display: flex;
+    padding: 24px 32px;
+    margin-bottom: 16x;
+}
+
+.comment-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.name-comment {
+    flex: 1 1 auto;
+    position: relative;
+    h3 {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 25px;
+    }
+}
+
+.creator-title {
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.comment-content {
+    margin-bottom: 6px;
+    p {
+        font-size: 16px;
+        line-height: 22px;
+        white-space: pre-line;
+        word-break: break-word;
+    }
+}
+
+.day-post-reply {
+    display: flex;
+
+    .day-post {
+        color: rgba(22, 24, 35, 0.5);
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .rep-btn {
+        color: rgba(22, 24, 35, 0.5);
+        font-size: 14px;
+        line-height: 20px;
+        margin-left: 24px !important;
+        cursor: pointer;
+    }
+}
+
+.heart-of-comment {
+    margin-top: 18px;
+    position: relative;
+
+    .heart-comm-btn {
+        padding: 0;
+        color: rgba(22, 24, 35, 0.5);
+        height: 20px;
+
+        .active {
+            fill: var(--primary) !important;
+        }
+    }
+
+    p {
+        color: rgba(22, 24, 35, 0.5);
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+    }
+}
+
+.comment-reAt {
+    position: absolute;
+    top: -42%;
+    right: -8%;
+
+    &:hover svg {
+        opacity: 1;
+    }
+
+    svg {
+        opacity: 0;
+    }
+}
+
+//////////////////////////////reat-btn
+.reAt-btn-wrapper {
+    width: 200px;
+    height: 64px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+
+    .title {
+        font-family: ProximaNova, Arial, Tahoma, PingFangSC, sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 22px;
+        margin-left: 12px !important;
+    }
+
+    // .icon {
+    //     svg {
+    //         fill: #000 !important;
+    //     }
+    // }
+}

@@ -35,6 +35,7 @@ const Global = ({ children }) => {
     const [currentUser, setcurrentUser] = useState(null);
     const [login, setLogin] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
+    const [showRegister, setshowRegister] = useState(false);
 
     const SHARE_LIST = [
         {
@@ -170,6 +171,8 @@ const Global = ({ children }) => {
         setLogin,
         showLogin,
         setShowLogin,
+        showRegister,
+        setshowRegister,
 
         // ----------------------------------function--------------------------------------------
         handleChangeVideo,

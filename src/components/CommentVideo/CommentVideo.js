@@ -20,39 +20,30 @@ import * as accountUserInfo from '~/services/accountUserService';
 import * as videoService from '~/services/videoService';
 import Button from '~/Button/Button';
 import { useHook } from '~/hooks/useHook';
-import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import config from '~/configs';
 import Hastag from '../Hastag';
 import Image from '../images/Image';
 import AcountPreview from '~/layouts/components/Sidebar/SuggetsAcounts/AcountPreview';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { DateConvert } from '~/DateConvert/DateConvert';
+import * as Comment from '~/services/Comment/Comment';
 
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
-import routes from '~/configs/routes';
+import CommentItem from './CommnentItem/CommentItem';
 
 const cx = classNames.bind(styles);
 
 const CommentVideo = () => {
     const {
-        showComment,
-        setShowComment,
-        mutedGlobal,
-        setMutedGlobal,
-        volumeValueGlobal,
-        setVolumeValueGlobal,
-        currentVideo,
-        setcurrentVideo,
-        currentListVideo,
-        setcurrentListVideo,
+        currentUser,
         // handleChangeVideo,
         SHARE_LIST,
     } = useHook();
 
     const { nicknamevideo } = useParams();
     const { idvideo, type, numpage } = useParams();
-    const location = useLocation();
     let navigate = useNavigate();
 
     const [video, setVideo] = useState(null);
@@ -60,10 +51,11 @@ const CommentVideo = () => {
     const [volumeValue, setVolumeValue] = useState(1);
     const [mutedVolume, setMutedVolume] = useState(false);
     const [currentVideoTime, setCurrentVideoTime] = useState(0);
+    const [postCmt, setPostCmt] = useState(false);
     const [nextVideo, setNextVideo] = useState({});
-    const [prevtVideo, setPrevVideo] = useState({});
+    const [prevVideo, setPrevVideo] = useState({});
 
-    const [ip, setIp] = useState('');
+    const [ipCmt, setIpCmt] = useState('');
 
     const videoRef = useRef();
     const durationRef = useRef();
@@ -101,45 +93,67 @@ const CommentVideo = () => {
 
         getVideo();
     }, [listVideo]);
-    // useEffect(() => {
-    //     const getNextPrevVideo = async () => {
-    //         let n = listVideo?.length;
-    //         for (let i = 0; i < n; ++i) {
-    //             if (listVideo[i]?.id == idvideo) {
-    //                 if (i == 0) {
-    //                     setPrevVideo(listVideo[0]);
-    //                     setNextVideo(listVideo[i + 1]);
-    //                 } else if (i == n - 1) {
-    //                     setNextVideo(listVideo[i]);
-    //                     setPrevVideo(listVideo[i - 1]);
-    //                 } else {
-    //                     setPrevVideo(listVideo[i - 1]);
-    //                     setNextVideo(listVideo[i + 1]);
-    //                 }
-    //             }
-    //         }
-    //     };
 
-    //     getNextPrevVideo();
-    // }, [listVideo]);
-
-    const handleChangeVideo = (list, type) => {
-        let leng = list?.length;
-        for (let i = 0; i < leng; i++) {
-            if (video?.id == list[i]?.id) {
-                if (type == 'next') {
-                    if (i == leng - 1) {
-                        setVideo(list[leng - 1]);
-                    } else setVideo(list[i + 1]);
-                }
-                if (type == 'prev') {
+    useEffect(() => {
+        const getNextPrevVideo = async () => {
+            let n = listVideo?.length;
+            for (let i = 0; i < n; ++i) {
+                if (listVideo[i]?.id == idvideo) {
                     if (i == 0) {
-                        setVideo(list[0]);
-                    } else setVideo(list[i - 1]);
+                        setPrevVideo(listVideo[0]);
+                        setNextVideo(listVideo[i + 1]);
+                    } else if (i == n - 1) {
+                        setNextVideo(listVideo[i]);
+                        setPrevVideo(listVideo[i - 1]);
+                    } else {
+                        setPrevVideo(listVideo[i - 1]);
+                        setNextVideo(listVideo[i + 1]);
+                    }
                 }
             }
+        };
+
+        getNextPrevVideo();
+    }, [listVideo]);
+
+    const handleChangeVideo = (typeBtn) => {
+        if (typeBtn === 'next') {
+            navigate(`${config.routes.home}@${nicknamevideo}/${nextVideo.id}/${type}/${numpage}`);
+            navigate(0);
+        }
+        if (typeBtn === 'prev') {
+            navigate(`${config.routes.home}@${nicknamevideo}/${prevVideo.id}/${type}/${numpage}`);
+            navigate(0);
         }
     };
+
+    const backPage = (npage) => {
+        if (npage === 'none') {
+            navigate(`${config.routes.home}@${nicknamevideo}`);
+        }
+        if (npage !== 'none' && typeof Number(npage) === 'number') {
+            navigate(`${config.routes.home}`);
+        }
+        // console.log(typeof npage);
+    };
+
+    // const handleChangeVideo = (list, type) => {
+    //     let leng = list?.length;
+    //     for (let i = 0; i < leng; i++) {
+    //         if (video?.id == list[i]?.id) {
+    //             if (type == 'next') {
+    //                 if (i == leng - 1) {
+    //                     setVideo(list[leng - 1]);
+    //                 } else setVideo(list[i + 1]);
+    //             }
+    //             if (type == 'prev') {
+    //                 if (i == 0) {
+    //                     setVideo(list[0]);
+    //                 } else setVideo(list[i - 1]);
+    //             }
+    //         }
+    //     }
+    // };
 
     useEffect(() => {
         videoRef.current.play();
@@ -201,6 +215,20 @@ const CommentVideo = () => {
     // console.log(currentListVideo);
     // console.log(location);
 
+    const postComment = async () => {
+        const data = {
+            comment: ipCmt,
+        };
+        try {
+            const res = await Comment.post(idvideo, data, currentUser.meta.token);
+            setIpCmt('');
+            setPostCmt(!postCmt);
+            return res;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const renderPreview = (props) => {
         return (
             <div tabIndex="-1">
@@ -233,7 +261,9 @@ const CommentVideo = () => {
                         <Button
                             className={cx('close-btn')}
                             onClick={() => {
-                                navigate(-1);
+                                // navigate(`${config.routes.home}@${nicknamevideo}`);
+                                // navigate(0);
+                                backPage(numpage);
                             }}
                         >
                             <CloseIcon />
@@ -246,7 +276,9 @@ const CommentVideo = () => {
                             <Button
                                 className={cx('prev-btn')}
                                 onClick={() => {
-                                    handleChangeVideo(listVideo, 'prev');
+                                    // handleChangeVideo(listVideo, 'prev');
+
+                                    handleChangeVideo('prev');
                                 }}
                             >
                                 <PrevIcon />
@@ -255,8 +287,10 @@ const CommentVideo = () => {
                             <Button
                                 className={cx('next-btn')}
                                 onClick={() => {
-                                    handleChangeVideo(listVideo, 'next');
+                                    // handleChangeVideo(listVideo, 'next');
                                     // navigate(`@${nextVideo?.user.nickname}/${nextVideo?.id}/comment`);
+
+                                    handleChangeVideo('next');
                                 }}
                             >
                                 <NextIcon />
@@ -400,25 +434,7 @@ const CommentVideo = () => {
                             </div>
                         </div>
                         <div className={cx('comment-box')}>
-                            <div className={cx('comment-item')}>
-                                <Image className={cx('comment-user-avatar')} src={video?.user.avatar} />
-                                <div className={cx('name-comment')}>
-                                    <h3>{video?.user.nickname}</h3>
-                                    <div className={cx('comment-content')}>
-                                        <p>Hé nhô nhô nhồ nhồ nhô</p>
-                                    </div>
-                                    <div className={cx('day-post-reply')}>
-                                        <span className={cx('day-post')}>26-10</span>
-                                        <span className={cx('rep-btn')}>reply</span>
-                                    </div>
-                                </div>
-                                <div className={cx('heart-of-comment')}>
-                                    <Button className={cx('heart-comm-btn')}>
-                                        <HeartSolidIcon />
-                                    </Button>
-                                    <p>336k</p>
-                                </div>
-                            </div>
+                            <CommentItem idvideo={idvideo} commentPosted={postCmt} />
                         </div>
                         <div className={cx('comment-write')}>
                             <div className={cx('comment-content-write')}>
@@ -426,8 +442,8 @@ const CommentVideo = () => {
                                     className={cx('input')}
                                     placeholder="Add comments..."
                                     spellCheck={false}
-                                    value={ip}
-                                    onChange={(e) => setIp(e.target.value)}
+                                    value={ipCmt}
+                                    onChange={(e) => setIpCmt(e.target.value)}
                                 />
                                 <div className={cx('comment-btn-group')}>
                                     <Button className={cx('comment-btn')}>
@@ -437,14 +453,15 @@ const CommentVideo = () => {
                                         <EmojiIcon />
                                     </Button>
                                 </div>
-                                <Button className={cx('post-comment-btn')}>Post</Button>
+                                <Button className={cx('post-comment-btn')} onClick={postComment}>
+                                    Post
+                                </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        // <div className={cx('modal-overlay')}>nhonh</div>
     );
 };
 
