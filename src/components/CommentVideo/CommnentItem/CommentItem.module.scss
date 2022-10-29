@@ -55,13 +55,14 @@
 }
 
 .heart-of-comment {
-    margin-top: 18px;
+    padding-top: 18px;
     position: relative;
 
     .heart-comm-btn {
         padding: 0;
         color: rgba(22, 24, 35, 0.5);
         height: 20px;
+        background-color: transparent;
 
         .active {
             fill: var(--primary) !important;
@@ -88,7 +89,7 @@
 
 .comment-reAt {
     position: absolute;
-    top: -50%;
+    top: -15%;
     right: -8%;
     height: 20px;
     display: none;

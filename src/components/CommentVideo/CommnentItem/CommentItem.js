@@ -37,6 +37,8 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
         title: 'Report',
     };
 
+    console.log(userPostId);
+
     useEffect(() => {
         const getCommentList = async () => {
             try {
@@ -103,7 +105,7 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
                 <div className={cx('comment-item')} key={index}>
                     <Image className={cx('comment-user-avatar')} src={item?.user.avatar} />
                     <div className={cx('name-comment')}>
-                        {userPostId === currentUser.data.id ? (
+                        {userPostId === item.user.id ? (
                             <h3>
                                 {item?.user.nickname} . <span className={cx('creator-title')}>Creator</span>
                             </h3>

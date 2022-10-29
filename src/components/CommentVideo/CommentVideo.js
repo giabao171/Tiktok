@@ -125,6 +125,8 @@ const CommentVideo = () => {
         getVideo();
     }, [listVideo, reload]);
 
+    // console.log(video);
+
     useEffect(() => {
         const getNextPrevVideo = async () => {
             let n = listVideo?.length;
