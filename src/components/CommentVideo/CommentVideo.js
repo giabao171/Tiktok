@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, memo } from 'react';
+import React, { useEffect, useRef, useState, memo } from 'react';
 import classNames from 'classnames/bind';
 import styles from './CommentVideo.module.scss';
 import Video from '../video';
@@ -8,9 +8,9 @@ import {
     EmojiIcon,
     FlagIcon,
     HeartIcon,
-    HeartSolidIcon,
     NextIcon,
     PrevIcon,
+    PrimaryHeartIcon,
     ShareIcon,
     TagIcon,
     VolumeIcon,
@@ -18,20 +18,22 @@ import {
 } from '../icons/Icons';
 import * as accountUserInfo from '~/services/accountUserService';
 import * as videoService from '~/services/videoService';
+import * as Comment from '~/services/Comment/Comment';
+import * as VideoLike from '~/services/Video/LikeVideo';
 import Button from '~/Button/Button';
 import { useHook } from '~/hooks/useHook';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import config from '~/configs';
 import Hastag from '../Hastag';
 import Image from '../images/Image';
 import AcountPreview from '~/layouts/components/Sidebar/SuggetsAcounts/AcountPreview';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { DateConvert } from '~/DateConvert/DateConvert';
-import * as Comment from '~/services/Comment/Comment';
 
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 import CommentItem from './CommnentItem/CommentItem';
+import LoginModal from '~/layouts/components/LoginModal/LoginModal';
 
 const cx = classNames.bind(styles);
 
@@ -40,6 +42,8 @@ const CommentVideo = () => {
         currentUser,
         // handleChangeVideo,
         SHARE_LIST,
+        setShowLogin,
+        showLogin,
     } = useHook();
 
     const { nicknamevideo } = useParams();
@@ -54,28 +58,49 @@ const CommentVideo = () => {
     const [postCmt, setPostCmt] = useState(false);
     const [nextVideo, setNextVideo] = useState({});
     const [prevVideo, setPrevVideo] = useState({});
-
     const [ipCmt, setIpCmt] = useState('');
+    const [videoLiked, setVideoLiked] = useState();
+    const [numOfLiked, setNumOfLiked] = useState();
+    const [numOfComment, setNumOfComment] = useState();
+    const [reload, setReload] = useState(false);
 
     const videoRef = useRef();
-    const durationRef = useRef();
 
     useEffect(() => {
         const fetch = async () => {
-            if (type === 'comment') {
-                try {
-                    const result = await accountUserInfo.accountUserService(nicknamevideo);
-                    setListVideo(result.videos);
-                } catch (error) {
-                    console.log('loi ko lay ddc list');
+            if (currentUser !== null) {
+                if (type === 'comment') {
+                    try {
+                        const result = await accountUserInfo.accountUserService(nicknamevideo, currentUser.meta.token);
+                        setListVideo(result.videos);
+                    } catch (error) {
+                        console.log('loi ko lay ddc list');
+                    }
                 }
-            }
-            if (type === 'suggest') {
-                try {
-                    const result = await videoService.videoService(numpage);
-                    setListVideo(result);
-                } catch (error) {
-                    console.log('loi ko lay ddc list');
+                if (type === 'suggest') {
+                    try {
+                        const result = await videoService.videoService(numpage, 'for-you', currentUser.meta.token);
+                        setListVideo(result);
+                    } catch (error) {
+                        console.log('loi ko lay ddc list');
+                    }
+                }
+            } else {
+                if (type === 'comment') {
+                    try {
+                        const result = await accountUserInfo.accountUserService(nicknamevideo);
+                        setListVideo(result.videos);
+                    } catch (error) {
+                        console.log('loi ko lay ddc list');
+                    }
+                }
+                if (type === 'suggest') {
+                    try {
+                        const result = await videoService.videoService(numpage, 'for-you');
+                        setListVideo(result);
+                    } catch (error) {
+                        console.log('loi ko lay ddc list');
+                    }
                 }
             }
         };
@@ -87,12 +112,18 @@ const CommentVideo = () => {
         const getVideo = async () => {
             let n = listVideo?.length;
             for (let i = 0; i < n; ++i) {
-                if (listVideo[i]?.id == idvideo) setVideo(listVideo[i]);
+                if (listVideo[i]?.id == idvideo) {
+                    setVideo(listVideo[i]);
+                    // console.log(listVideo[i]);
+                    setVideoLiked(listVideo[i].is_liked);
+                    setNumOfLiked(listVideo[i].likes_count);
+                    setNumOfComment(listVideo[i].comments_count);
+                }
             }
         };
 
         getVideo();
-    }, [listVideo]);
+    }, [listVideo, reload]);
 
     useEffect(() => {
         const getNextPrevVideo = async () => {
@@ -114,28 +145,7 @@ const CommentVideo = () => {
         };
 
         getNextPrevVideo();
-    }, [listVideo]);
-
-    const handleChangeVideo = (typeBtn) => {
-        if (typeBtn === 'next') {
-            navigate(`${config.routes.home}@${nicknamevideo}/${nextVideo.id}/${type}/${numpage}`);
-            navigate(0);
-        }
-        if (typeBtn === 'prev') {
-            navigate(`${config.routes.home}@${nicknamevideo}/${prevVideo.id}/${type}/${numpage}`);
-            navigate(0);
-        }
-    };
-
-    const backPage = (npage) => {
-        if (npage === 'none') {
-            navigate(`${config.routes.home}@${nicknamevideo}`);
-        }
-        if (npage !== 'none' && typeof Number(npage) === 'number') {
-            navigate(`${config.routes.home}`);
-        }
-        // console.log(typeof npage);
-    };
+    }, [listVideo, reload]);
 
     // const handleChangeVideo = (list, type) => {
     //     let leng = list?.length;
@@ -215,6 +225,29 @@ const CommentVideo = () => {
     // console.log(currentListVideo);
     // console.log(location);
 
+    const handleChangeVideo = (typeBtn) => {
+        if (typeBtn === 'next') {
+            navigate(`${config.routes.home}@${nicknamevideo}/${nextVideo.id}/${type}/${numpage}`);
+            // navigate(0);
+            setReload(!reload);
+        }
+        if (typeBtn === 'prev') {
+            navigate(`${config.routes.home}@${nicknamevideo}/${prevVideo.id}/${type}/${numpage}`);
+            // navigate(0);
+            setReload(!reload);
+        }
+    };
+
+    const backPage = (npage) => {
+        if (npage === 'none') {
+            navigate(`${config.routes.home}@${nicknamevideo}`);
+        }
+        if (npage !== 'none' && typeof Number(npage) === 'number') {
+            navigate(`${config.routes.home}`);
+        }
+        // console.log(typeof npage);
+    };
+
     const postComment = async () => {
         const data = {
             comment: ipCmt,
@@ -223,7 +256,28 @@ const CommentVideo = () => {
             const res = await Comment.post(idvideo, data, currentUser.meta.token);
             setIpCmt('');
             setPostCmt(!postCmt);
+            setNumOfComment((prev) => prev + 1);
             return res;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleLikeVideo = () => {
+        try {
+            setVideoLiked(!videoLiked);
+            setNumOfLiked((prev) => prev + 1);
+            VideoLike.like(video.id, video.uuid, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleUnLikeVideo = () => {
+        try {
+            setVideoLiked(!videoLiked);
+            setNumOfLiked((prev) => prev - 1);
+            VideoLike.unlike(video.id, video.uuid, currentUser.meta.token);
         } catch (error) {
             console.log(error);
         }
@@ -396,16 +450,26 @@ const CommentVideo = () => {
                                 <div className={cx('interect-share')}>
                                     <div className={cx('number-interect')}>
                                         <div className={cx('heart')}>
-                                            <Button className={cx('btn-in')}>
-                                                <HeartIcon />
-                                            </Button>
-                                            <span>{video?.likes_count}</span>
+                                            {videoLiked === true && !!currentUser === true ? (
+                                                <Button className={cx('btn-in')} onClick={handleUnLikeVideo}>
+                                                    <PrimaryHeartIcon />
+                                                </Button>
+                                            ) : videoLiked === false && !!currentUser === true ? (
+                                                <Button className={cx('btn-in')} onClick={handleLikeVideo}>
+                                                    <HeartIcon />
+                                                </Button>
+                                            ) : (
+                                                <Button className={cx('btn-in')} onClick={() => setShowLogin(true)}>
+                                                    <HeartIcon />
+                                                </Button>
+                                            )}
+                                            <span>{numOfLiked}</span>
                                         </div>
                                         <div className={cx('comment')}>
                                             <Button className={cx('btn-in')}>
                                                 <CommentIcon />
                                             </Button>
-                                            <span>{video?.comments_count}</span>
+                                            <span>{numOfComment}</span>
                                         </div>
                                     </div>
                                     <div className={cx('action-list')}>
@@ -434,7 +498,12 @@ const CommentVideo = () => {
                             </div>
                         </div>
                         <div className={cx('comment-box')}>
-                            <CommentItem idvideo={idvideo} commentPosted={postCmt} />
+                            <CommentItem
+                                idvideo={idvideo}
+                                commentPosted={postCmt}
+                                setNumOfComment={setNumOfComment}
+                                userPostId={video?.user.id}
+                            />
                         </div>
                         <div className={cx('comment-write')}>
                             <div className={cx('comment-content-write')}>
@@ -461,6 +530,7 @@ const CommentVideo = () => {
                     </div>
                 </div>
             </div>
+            {showLogin && <LoginModal />}
         </div>
     );
 };

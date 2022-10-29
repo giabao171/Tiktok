@@ -27,8 +27,13 @@ const ProfileContent = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const result = await accountUserInfo.accountUserService(nickname);
-                setUserinfo(result);
+                if (currentUser !== null) {
+                    const result = await accountUserInfo.accountUserService(nickname, currentUser.meta.token);
+                    setUserinfo(result);
+                } else {
+                    const result = await accountUserInfo.accountUserService(nickname);
+                    setUserinfo(result);
+                }
             } catch (error) {
                 setUserinfo({});
             }

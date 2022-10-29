@@ -8,6 +8,7 @@ import {
     FlagIcon,
     HeartPrimaryIcon,
     HeartSolidIcon,
+    NextIcon,
     RecyclebinIcon,
     ThreePointIcon,
 } from '~/components/icons/Icons';
@@ -19,8 +20,9 @@ import * as GetComment from '~/services/Comment/Comment';
 import Tippy from '@tippyjs/react/headless';
 const cx = classNames.bind(styles);
 
-const CommentItem = ({ idvideo, commentPosted }) => {
+const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) => {
     const { currentUser } = useHook();
+    const [commentPage, setCommentPgae] = useState(1);
     const [liked, setLiked] = useState(false);
     const [deleted, setDeleted] = useState(false);
     const [listComment, setListComment] = useState([]);
@@ -38,7 +40,8 @@ const CommentItem = ({ idvideo, commentPosted }) => {
     useEffect(() => {
         const getCommentList = async () => {
             try {
-                const res = await GetComment.get(idvideo, currentUser.meta.token);
+                const res = await GetComment.get(idvideo, commentPage, currentUser.meta.token);
+                // setListComment([...listComment, ...res.data]);
                 setListComment(res.data);
             } catch (error) {
                 console.log(error);
@@ -78,7 +81,8 @@ const CommentItem = ({ idvideo, commentPosted }) => {
 
     const deleteComment = async (idCmt) => {
         try {
-            const res = GetComment.del(idCmt, currentUser.meta.token);
+            const res = await GetComment.del(idCmt, currentUser.meta.token);
+            setNumOfComment((prev) => prev - 1);
             return res;
         } catch (error) {
             console.log(error);
@@ -94,12 +98,12 @@ const CommentItem = ({ idvideo, commentPosted }) => {
     };
 
     return (
-        <>
+        <div className={cx('comment-item-model')}>
             {listComment.map((item, index) => (
                 <div className={cx('comment-item')} key={index}>
                     <Image className={cx('comment-user-avatar')} src={item?.user.avatar} />
                     <div className={cx('name-comment')}>
-                        {item.user.id === currentUser.data.id ? (
+                        {userPostId === currentUser.data.id ? (
                             <h3>
                                 {item?.user.nickname} . <span className={cx('creator-title')}>Creator</span>
                             </h3>
@@ -130,12 +134,24 @@ const CommentItem = ({ idvideo, commentPosted }) => {
                         )}
                         <Button className={cx('heart-comm-btn')} onClick={() => likeUnLike(item.id, item.is_liked)}>
                             <span>{item?.is_liked ? <HeartPrimaryIcon /> : <HeartSolidIcon />}</span>
+                            <p>{item?.likes_count}</p>
                         </Button>
-                        <p>{item?.likes_count}</p>
+                        {/* <p>{item?.likes_count}</p> */}
                     </div>
                 </div>
             ))}
-        </>
+            <div className={cx('load-more-btn')}>
+                {currentUser && listComment.length > 9 && (
+                    <Button
+                        rightIcon={<NextIcon />}
+                        className={cx('load-btn')}
+                        onClick={() => setCommentPgae(commentPage + 1)}
+                    >
+                        Load more
+                    </Button>
+                )}
+            </div>
+        </div>
     );
 };
 

@@ -6,7 +6,6 @@ import VideoRender from './VideoRender/index';
 import Button from '~/Button/Button';
 import { Link } from 'react-router-dom';
 import Tippy from '@tippyjs/react/headless';
-import config from '~/configs';
 import Hastag from '../Hastag';
 import ActionList from './VideoAction/ActionList';
 import { Wrapper as PopperWrapper } from '~/components/Popper';

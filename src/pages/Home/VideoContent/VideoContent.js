@@ -11,20 +11,26 @@ const cx = classNames.bind(styles);
 const VideoContent = ({ className }) => {
     const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);
+    const { currentUser } = useHook();
 
     useEffect(() => {
         const fetch = async () => {
             try {
-                const result = await videoService.videoService(page);
-                setVideoList(result);
-                // const result = await videoService.videoService(6);
-                // setVideoList((prev = []) => [...prev, ...result]);
+                if (currentUser !== null) {
+                    const result = await videoService.videoService(page, 'for-you', currentUser.meta.token);
+                    setVideoList(result);
+                    // const result = await videoService.videoService(6);
+                    // setVideoList((prev = []) => [...prev, ...result]);
+                } else {
+                    const result = await videoService.videoService(page, 'for-you');
+                    setVideoList(result);
+                }
             } catch (error) {
                 setVideoList([]);
             }
         };
         fetch();
-    }, []);
+    }, [currentUser]);
 
     // useEffect(() => {
     //     setTimeout(() => {
@@ -43,7 +49,7 @@ const VideoContent = ({ className }) => {
 
     return (
         <div className={cx('wrapper', className)}>
-            {videoList.map((item, index) => (
+            {videoList?.map((item, index) => (
                 <VideoItem key={index} item={item} curentPage={page} />
             ))}
             {/* <VideoItem srcVideo="https://files.fullstack.edu.vn/f8-tiktok/videos/178-63200ee3995e4.mp4" />

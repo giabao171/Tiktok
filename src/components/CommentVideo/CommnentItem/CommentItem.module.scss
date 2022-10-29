@@ -66,6 +66,10 @@
         .active {
             fill: var(--primary) !important;
         }
+
+        p {
+            font-weight: 400;
+        }
     }
 
     p {
@@ -74,20 +78,28 @@
         line-height: 20px;
         text-align: center;
     }
+
+    &:hover {
+        .comment-reAt {
+            display: block;
+        }
+    }
 }
 
 .comment-reAt {
     position: absolute;
-    top: -42%;
+    top: -50%;
     right: -8%;
+    height: 20px;
+    display: none;
 
-    &:hover svg {
-        opacity: 1;
-    }
+    // &:hover svg {
+    //     opacity: 1;
+    // }
 
-    svg {
-        opacity: 0;
-    }
+    // svg {
+    //     opacity: 0;
+    // }
 }
 
 //////////////////////////////reat-btn
@@ -115,4 +127,37 @@
     //         fill: #000 !important;
     //     }
     // }
+}
+
+.load-more-btn {
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+        background-color: rgb(224, 224, 224);
+
+        .load-btn {
+            color: #000;
+
+            svg {
+                fill: #000;
+            }
+        }
+    }
+}
+
+.load-btn {
+    font-family: ProximaNova, Arial, Tahoma, PingFangSC, sans-serif;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    line-height: 22px !important;
+    background-color: transparent;
+    color: rgba(22, 24, 35, 0.5);
+
+    svg {
+        fill: rgba(22, 24, 35, 0.5);
+        height: 12px;
+        width: 12px;
+        transform: rotate(90deg);
+    }
 }

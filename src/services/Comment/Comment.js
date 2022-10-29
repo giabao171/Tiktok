@@ -1,8 +1,11 @@
 import * as httpRequest from '~/utils/httpRequest';
 
-export const get = async (id, token) => {
+export const get = async (id, page, token) => {
     try {
         const res = await httpRequest.get(`videos/${id}/comments`, {
+            params: {
+                page: `${page}`,
+            },
             headers: { Authorization: `Bearer ${token}` },
         });
         return res;
