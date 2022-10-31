@@ -18,10 +18,13 @@ import * as Comment from '~/services/Comment/LikeComment';
 import * as GetComment from '~/services/Comment/Comment';
 
 import Tippy from '@tippyjs/react/headless';
+// import Tippy from '@tippyjs/react';
+// import 'tippy.js/dist/svg-arrow.css';
+import { roundArrow } from 'tippy.js';
 const cx = classNames.bind(styles);
 
 const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) => {
-    const { currentUser } = useHook();
+    const { currentUser, showLogin } = useHook();
     const [commentPage, setCommentPgae] = useState(1);
     const [liked, setLiked] = useState(false);
     const [deleted, setDeleted] = useState(false);
@@ -37,7 +40,7 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
         title: 'Report',
     };
 
-    console.log(userPostId);
+    // console.log(userPostId);
 
     useEffect(() => {
         const getCommentList = async () => {
@@ -51,8 +54,8 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
         };
 
         getCommentList();
-        console.log(listComment);
-    }, [idvideo, liked, commentPosted, deleted]);
+        // console.log(listComment);
+    }, [idvideo, liked, commentPosted, deleted, showLogin]);
 
     const likeUnLike = (idvideo, isLiked) => {
         if (isLiked) {
@@ -122,7 +125,12 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
                     </div>
                     <div className={cx('heart-of-comment')}>
                         {currentUser.data.id === item.user.id ? (
-                            <Tippy render={() => renderBtn(DELETE, item.id)} interactive placement="bottom">
+                            <Tippy
+                                render={() => renderBtn(DELETE, item.id)}
+                                interactive
+                                placement="bottom"
+                                arrow="true"
+                            >
                                 <span className={cx('comment-reAt')}>
                                     <ThreePointIcon />
                                 </span>

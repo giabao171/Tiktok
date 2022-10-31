@@ -1,21 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './VideoItem.module.scss';
 import Image from '../images/Image';
 import VideoRender from './VideoRender/index';
 import Button from '~/Button/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Tippy from '@tippyjs/react/headless';
 import Hastag from '../Hastag';
 import ActionList from './VideoAction/ActionList';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AcountPreview from '~/layouts/components/Sidebar/SuggetsAcounts/AcountPreview';
 import { useHook } from '~/hooks/useHook';
+import * as FollowUser from '~/services/Follow/FolowUnFollow';
+import config from '~/configs';
 
 const cx = classNames.bind(styles);
 
 const VideoItem = ({ item, curentPage }) => {
     const { currentUser, setShowLogin } = useHook();
+    const [followed, setFollowed] = useState(item.user.is_followed);
+    const [listFollow, setListFollow] = useState([]);
+
+    const navigate = useNavigate();
+
+    const handleFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.follow(item.user.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleUnFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.unFollow(item.user.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getFl = async () => {
+        try {
+            const res = await FollowUser.getFollow(1, currentUser.meta.token);
+            setListFollow(res);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // useEffect(() => {
+    //     console.log(listFollow);
+    // }, [listFollow]);
+
+    const toProfile = () => {
+        navigate(`${config.routes.home}@${item.user.nickname}`);
+    };
 
     const renderPreview = (props) => {
         return (
@@ -35,7 +76,7 @@ const VideoItem = ({ item, curentPage }) => {
             <div className={cx('video-content-info')}>
                 <div className={cx('info-video')}>
                     <div className={cx('acount-video-desc')}>
-                        <Link className={cx('acount-info')} to={`/@${item.user.nickname}`}>
+                        <div className={cx('acount-info')}>
                             <div>
                                 <Tippy
                                     // visible
@@ -44,14 +85,15 @@ const VideoItem = ({ item, curentPage }) => {
                                     render={renderPreview}
                                     placement="bottom"
                                     offset={[-120, 30]}
+                                    zIndex="9999999999"
                                 >
-                                    <div>
+                                    <div onClick={toProfile} style={{ cursor: 'pointer' }}>
                                         <h3 className={cx('user-name')}>{item.user.nickname}</h3>
                                         <h4>{item.user.nickname}</h4>
                                     </div>
                                 </Tippy>
                             </div>
-                        </Link>
+                        </div>
                         <div className={cx('video-desc')}>
                             {item.description
                                 .split(' #')
@@ -69,12 +111,6 @@ const VideoItem = ({ item, curentPage }) => {
                                         {item}
                                     </Hastag>
                                 ))}
-                            {/* <span className={cx('desc')}>{item.description}</span>
-                            <Hastag className={cx('hastag')}>xuhuongtiktok</Hastag>
-                            <Hastag className={cx('hastag')}>xuhuong</Hastag>
-                            <Hastag className={cx('hastag')}>trending</Hastag>
-                            <Hastag className={cx('hastag')}>fyp</Hastag>
-                            <Hastag className={cx('hastag')}>foryou</Hastag> */}
                         </div>
                         <div className={cx('music-tag')}>
                             {item.music && (
@@ -84,15 +120,31 @@ const VideoItem = ({ item, curentPage }) => {
                             )}
                         </div>
                     </div>
-                    {!!currentUser ? (
-                        <Button className={cx('follow-btn')} outline>
+                    {/* {!!currentUser ? (
+                        <Button className={cx('follow-btn')} primary>
                             Following
                         </Button>
                     ) : (
                         <Button className={cx('follow-btn')} outline onClick={() => setShowLogin(true)}>
                             Following
                         </Button>
+                    )} */}
+                    {!!currentUser === true && followed === true ? (
+                        <Button className={cx('follow-btn', 'following')} outline onClick={handleUnFollow}>
+                            Following
+                        </Button>
+                    ) : !!currentUser === true && followed === false ? (
+                        <Button className={cx('follow-btn')} outline onClick={handleFollow}>
+                            Follow
+                        </Button>
+                    ) : (
+                        <Button className={cx('follow-btn')} outline onClick={() => setShowLogin(true)}>
+                            Follow
+                        </Button>
                     )}
+                    {/* <Button primary onClick={getFl}>
+                        get
+                    </Button> */}
                 </div>
                 <div className={cx('video')}>
                     {/* <VideoRender src={item.file_url} /> */}

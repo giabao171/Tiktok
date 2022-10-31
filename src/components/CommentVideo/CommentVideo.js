@@ -29,12 +29,12 @@ import Image from '../images/Image';
 import AcountPreview from '~/layouts/components/Sidebar/SuggetsAcounts/AcountPreview';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { DateConvert } from '~/DateConvert/DateConvert';
-
 import Tippy from '@tippyjs/react';
-import HeadlessTippy from '@tippyjs/react/headless';
 import CommentItem from './CommnentItem/CommentItem';
 import LoginModal from '~/layouts/components/LoginModal/LoginModal';
+import * as FollowUser from '~/services/Follow/FolowUnFollow';
 
+import HeadlessTippy from '@tippyjs/react/headless';
 const cx = classNames.bind(styles);
 
 const CommentVideo = () => {
@@ -63,6 +63,7 @@ const CommentVideo = () => {
     const [numOfLiked, setNumOfLiked] = useState();
     const [numOfComment, setNumOfComment] = useState();
     const [reload, setReload] = useState(false);
+    const [followed, setFollowed] = useState();
 
     const videoRef = useRef();
 
@@ -106,7 +107,7 @@ const CommentVideo = () => {
         };
 
         fetch();
-    }, []);
+    }, [showLogin]);
 
     useEffect(() => {
         const getVideo = async () => {
@@ -118,6 +119,7 @@ const CommentVideo = () => {
                     setVideoLiked(listVideo[i].is_liked);
                     setNumOfLiked(listVideo[i].likes_count);
                     setNumOfComment(listVideo[i].comments_count);
+                    setFollowed(listVideo[i].user.is_followed);
                 }
             }
         };
@@ -125,7 +127,7 @@ const CommentVideo = () => {
         getVideo();
     }, [listVideo, reload]);
 
-    // console.log(video);
+    console.log(video);
 
     useEffect(() => {
         const getNextPrevVideo = async () => {
@@ -285,6 +287,24 @@ const CommentVideo = () => {
         }
     };
 
+    const handleUnFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.unFollow(video.user.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.follow(video.user.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const renderPreview = (props) => {
         return (
             <div tabIndex="-1">
@@ -420,9 +440,24 @@ const CommentVideo = () => {
                                 </div>
                             </div>
                             {/* </HeadlessTippy> */}
-                            <Button outline className={cx('fl-btn')}>
+                            {/* <Button outline className={cx('fl-btn')}>
                                 Follow
-                            </Button>
+                            </Button> */}
+                            {!!currentUser !== false ? (
+                                followed === true ? (
+                                    <Button outline large className={cx('btn', 'following')} onClick={handleUnFollow}>
+                                        Following
+                                    </Button>
+                                ) : (
+                                    <Button outline large className={cx('btn')} onClick={handleFollow}>
+                                        Follow
+                                    </Button>
+                                )
+                            ) : (
+                                <Button outline large className={cx('btn')} onClick={() => setShowLogin(true)}>
+                                    Follow
+                                </Button>
+                            )}
                         </div>
                         <div className={cx('video-info')}>
                             <div className={cx('description')}>

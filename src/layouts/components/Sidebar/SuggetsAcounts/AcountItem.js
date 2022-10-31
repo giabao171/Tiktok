@@ -47,7 +47,7 @@ const AcountItem = ({ onTippy, prop }) => {
                 </Tippy>
             ) : (
                 <Link to={`/@${prop.nickname}`} className={cx('acount-wrapper')}>
-                    <Image className={cx('avatar')} src={prop.avatar} alt="tam" />
+                    <Image className={cx('avatar')} src={prop.avatar} alt={prop.nickname} />
                     <div className={cx('info')}>
                         <div className={cx('name')}>
                             <h4>{prop.nickname}</h4>

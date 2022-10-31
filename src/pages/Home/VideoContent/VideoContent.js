@@ -8,29 +8,45 @@ import { useHook } from '~/hooks/useHook';
 
 const cx = classNames.bind(styles);
 
-const VideoContent = ({ className }) => {
+const VideoContent = ({ className, type }) => {
     const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);
-    const { currentUser } = useHook();
+    const { currentUser, showLogin } = useHook();
 
     useEffect(() => {
-        const fetch = async () => {
-            try {
-                if (currentUser !== null) {
-                    const result = await videoService.videoService(page, 'for-you', currentUser.meta.token);
-                    setVideoList(result);
-                    // const result = await videoService.videoService(6);
-                    // setVideoList((prev = []) => [...prev, ...result]);
-                } else {
-                    const result = await videoService.videoService(page, 'for-you');
-                    setVideoList(result);
+        if (type === 'for-you') {
+            const fetch = async () => {
+                try {
+                    if (currentUser !== null) {
+                        const result = await videoService.videoService(page, 'for-you', currentUser.meta.token);
+                        setVideoList(result);
+                        // const result = await videoService.videoService(6);
+                        // setVideoList((prev = []) => [...prev, ...result]);
+                    } else {
+                        const result = await videoService.videoService(page, 'for-you');
+                        setVideoList(result);
+                    }
+                } catch (error) {
+                    setVideoList([]);
                 }
-            } catch (error) {
-                setVideoList([]);
+            };
+            fetch();
+        } else if (type === 'following') {
+            if (!!currentUser !== false) {
+                const fetch = async () => {
+                    try {
+                        const result = await videoService.videoService(page, 'following', currentUser.meta.token);
+                        setVideoList(result);
+                        // const result = await videoService.videoService(6);
+                        // setVideoList((prev = []) => [...prev, ...result]);
+                    } catch (error) {
+                        setVideoList([]);
+                    }
+                };
+                fetch();
             }
-        };
-        fetch();
-    }, [currentUser]);
+        }
+    }, [currentUser, showLogin]);
 
     // useEffect(() => {
     //     setTimeout(() => {

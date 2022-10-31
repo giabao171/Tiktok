@@ -13,16 +13,18 @@ import Menu from '~/components/Popper/Menu/Menu';
 import VideoReviewOfAcc from '~/components/VideoReviewOfAcc/VideoReviewOfAcc';
 import { useHook } from '~/hooks/useHook';
 import EditProfileModal from '../EditProfileModal/EditProfileModal';
+import * as FollowUser from '~/services/Follow/FolowUnFollow';
 
 const cx = classNames.bind(styles);
 
 const ProfileContent = () => {
-    const { SHARE_LIST, EVALUTE_LIST, currentUser } = useHook();
+    const { SHARE_LIST, EVALUTE_LIST, currentUser, setShowLogin } = useHook();
 
     const { nickname } = useParams();
 
     const [userInfo, setUserinfo] = useState({});
     const [showEditProfile, setShowEditProfile] = useState(false);
+    const [followed, setFollowed] = useState(false);
 
     useEffect(() => {
         const fetch = async () => {
@@ -34,17 +36,35 @@ const ProfileContent = () => {
                     const result = await accountUserInfo.accountUserService(nickname);
                     setUserinfo(result);
                 }
+                // setFollowed(userInfo?.is_followed);
             } catch (error) {
                 setUserinfo({});
             }
         };
         fetch();
-    }, [nickname]);
+    }, [nickname, followed]);
 
     // useEffect(() => {
-    //     setcurrentListVideo(userInfo.videos);
-    // });
+    //     setFollowed(userInfo?.is_followed);
+    // }, []);
 
+    const handleUnFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.unFollow(userInfo.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleFollow = () => {
+        try {
+            setFollowed(!followed);
+            FollowUser.follow(userInfo.id, currentUser.meta.token);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     // console.log(currentListVideo);
 
     return (
@@ -64,18 +84,18 @@ const ProfileContent = () => {
                             </h2>
                         </div>
                         <p>{userInfo.first_name + ` ` + userInfo.last_name}</p>
-                        {currentUser !== null && currentUser.data.id === userInfo.id ? (
-                            <Button
-                                rounded
-                                small
-                                className={cx('edit-btn')}
-                                leftIcon={<EditProfileIcon />}
-                                onClick={() => setShowEditProfile(true)}
-                            >
-                                Edit profile
-                            </Button>
+                        {currentUser !== null ? (
+                            userInfo.is_followed === false ? (
+                                <Button primary large className={cx('btn')} onClick={handleFollow}>
+                                    Follow
+                                </Button>
+                            ) : (
+                                <Button outline large className={cx('btn')} onClick={handleUnFollow}>
+                                    Following
+                                </Button>
+                            )
                         ) : (
-                            <Button primary large className={cx('btn')}>
+                            <Button primary large className={cx('btn')} onClick={() => setShowLogin(true)}>
                                 Follow
                             </Button>
                         )}

@@ -5,7 +5,7 @@ import styles from './Video.module.scss';
 const cx = classNames.bind(styles);
 
 const Video = (
-    { className, src, type = 'video/mp4', onTimeUpdate, onMouseEnter, onMouseLeave, square, autoPlay },
+    { className, src, type = 'video/mp4', onTimeUpdate, onMouseEnter, onMouseLeave, square, autoPlay, muted = false },
     ref,
 ) => {
     const classes = cx('video-rne', {
@@ -25,6 +25,7 @@ const Video = (
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 autoPlay
+                muted={muted}
             />
         </div>
     );

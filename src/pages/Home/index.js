@@ -16,7 +16,7 @@ const Home = () => {
 
     return (
         <div className={cx('home-wrapper')}>
-            <VideoContent />
+            <VideoContent type="for-you" />
         </div>
     );
 };
