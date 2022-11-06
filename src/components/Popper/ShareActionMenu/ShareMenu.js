@@ -35,7 +35,7 @@ const ShareMenu = ({ children, items = [], footer = false }) => {
     };
 
     useEffect(() => {
-        if (moreAction == true) {
+        if (moreAction === true) {
             setsumOfActiom(items.length);
         } else {
             setsumOfActiom(5);

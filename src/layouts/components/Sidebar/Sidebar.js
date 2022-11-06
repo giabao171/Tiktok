@@ -24,7 +24,7 @@ const Sidebar = () => {
     const [style, setStyle] = useState({});
 
     useEffect(() => {
-        if (lessSideBar == true) {
+        if (lessSideBar === true) {
             setStyle({
                 left: '12px',
                 width: '240px',

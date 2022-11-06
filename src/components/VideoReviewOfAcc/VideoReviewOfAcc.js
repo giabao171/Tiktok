@@ -24,7 +24,7 @@ const VideoReviewOfAcc = ({ userInfo }) => {
     };
 
     useEffect(() => {
-        if (videoType == false && likeType == true) {
+        if (videoType === false && likeType === true) {
             onLineUnderChange(100);
         } else {
             onLineUnderChange(0);

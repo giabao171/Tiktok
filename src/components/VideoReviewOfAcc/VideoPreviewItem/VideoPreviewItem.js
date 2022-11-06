@@ -23,7 +23,7 @@ const VideoPreviewItem = ({ item, listPlaying }) => {
     const { nickname } = useParams();
 
     useEffect(() => {
-        if (play == true) {
+        if (play === true) {
             if (videoRef.current) {
                 videoRef.current.muted = true;
                 videoRef.current.play();
@@ -69,7 +69,7 @@ const VideoPreviewItem = ({ item, listPlaying }) => {
                         </div>
                     </div>
                     <div className={cx('description')}>{item.description}</div>
-                    {showComment == true && <CommentVideo item={item} listPlaying={listPlaying} />}
+                    {showComment === true && <CommentVideo item={item} listPlaying={listPlaying} />}
                 </div>
             </Link>
             {/* {showComment == true && <CommentVideo item={currentVideo} />} */}

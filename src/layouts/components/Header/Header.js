@@ -113,7 +113,7 @@ const Header = () => {
     // console.log(currentUser);
     // console.log(currentUser.data.id);
     useEffect(() => {
-        if (largeHeader == true) {
+        if (largeHeader === true) {
             setStyle({
                 width: '100%',
             });

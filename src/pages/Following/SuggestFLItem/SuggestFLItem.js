@@ -18,7 +18,7 @@ const SuggestFLItem = ({ item }) => {
     const videoRef = useRef();
 
     useEffect(() => {
-        if (playBg == true) {
+        if (playBg === true) {
             if (videoRef.current) {
                 // videoRef.current.muted = true;
                 videoRef.current.play();
@@ -44,12 +44,14 @@ const SuggestFLItem = ({ item }) => {
                     e.stopPropagation();
                 }}
             >
-                <div className={cx('video-card')}>
-                    {playBg === true ? (
-                        <Video src={playBg ? item.file_url : `#`} muted={true} ref={videoRef} />
-                    ) : (
-                        <Image className={cx('img-thumb')} src={item.thumb_url} />
-                    )}
+                <div className={cx('video-card')} style={{ backgroundImage: `url(${item.thumb_url})` }}>
+                    {/* {
+                        playBg === true && <Video src={playBg ? item.file_url : `#`} muted={true} ref={videoRef} />
+                        // : (
+                        //     <Image className={cx('img-thumb')} src={item.thumb_url} />
+                        // )
+                    } */}
+                    <Video src={playBg ? item.file_url : `#`} muted={true} ref={videoRef} />
                 </div>
                 <div className={cx('card-desc')}>
                     <div className={cx('avatar-box')}>

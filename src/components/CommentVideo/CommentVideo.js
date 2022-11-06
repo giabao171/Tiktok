@@ -30,6 +30,7 @@ import AcountPreview from '~/layouts/components/Sidebar/SuggetsAcounts/AcountPre
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { DateConvert } from '~/DateConvert/DateConvert';
 import Tippy from '@tippyjs/react';
+import Tippyheadless from '@tippyjs/react/headless';
 import CommentItem from './CommnentItem/CommentItem';
 import LoginModal from '~/layouts/components/LoginModal/LoginModal';
 import * as FollowUser from '~/services/Follow/FolowUnFollow';
@@ -113,7 +114,7 @@ const CommentVideo = () => {
         const getVideo = async () => {
             let n = listVideo?.length;
             for (let i = 0; i < n; ++i) {
-                if (listVideo[i]?.id == idvideo) {
+                if (listVideo[i]?.id === Number(idvideo)) {
                     setVideo(listVideo[i]);
                     // console.log(listVideo[i]);
                     setVideoLiked(listVideo[i].is_liked);
@@ -133,11 +134,11 @@ const CommentVideo = () => {
         const getNextPrevVideo = async () => {
             let n = listVideo?.length;
             for (let i = 0; i < n; ++i) {
-                if (listVideo[i]?.id == idvideo) {
-                    if (i == 0) {
+                if (listVideo[i]?.id === Number(idvideo)) {
+                    if (i === 0) {
                         setPrevVideo(listVideo[0]);
                         setNextVideo(listVideo[i + 1]);
-                    } else if (i == n - 1) {
+                    } else if (i === n - 1) {
                         setNextVideo(listVideo[i]);
                         setPrevVideo(listVideo[i - 1]);
                     } else {
@@ -185,7 +186,7 @@ const CommentVideo = () => {
     }, [volumeValue]);
 
     useEffect(() => {
-        if (mutedVolume == true) {
+        if (mutedVolume === true) {
             videoRef.current.volume = 0;
             setVolumeValue(0);
             // setMutedVolume(true);
@@ -307,7 +308,7 @@ const CommentVideo = () => {
 
     const renderPreview = (props) => {
         return (
-            <div tabIndex="-1">
+            <div tabIndex="-1" {...props}>
                 <PopperWrapper>
                     <AcountPreview propVideo={video} />
                 </PopperWrapper>
@@ -417,29 +418,29 @@ const CommentVideo = () => {
                 <div className={cx('comment-part')}>
                     <div className={cx('comment-container')}>
                         <div className={cx('user-info')}>
-                            {/* <HeadlessTippy
+                            <Tippyheadless
                                 interactive
                                 delay={[800, 0]}
                                 render={renderPreview}
                                 placement="bottom"
                                 // offset={[-120, 30]}
-                                animation="false"
-                            > */}
-                            <div className={cx('info')}>
-                                <Image className={cx('avatar-of-vacc')} src={video?.user.avatar} />
-                                <div className={cx('name')}>
-                                    <span className={cx('nick-name')}>{video?.user.nickname}</span>
-                                    <p className={cx('full-name-day-post')}>
-                                        {video?.user.first_name + ` ` + video?.user.last_name}
-                                        <span className={cx('line')}> - </span>
-                                        <span className={cx('day-post')}>
-                                            {/* {video?.updated_at && <DateConvert day={video?.updated_at} />} */}
-                                            {video?.updated_at && DateConvert(video?.updated_at)}
-                                        </span>
-                                    </p>
+                                // animation="false"
+                            >
+                                <div className={cx('info')}>
+                                    <Image className={cx('avatar-of-vacc')} src={video?.user.avatar} />
+                                    <div className={cx('name')}>
+                                        <span className={cx('nick-name')}>{video?.user.nickname}</span>
+                                        <p className={cx('full-name-day-post')}>
+                                            {video?.user.first_name + ` ` + video?.user.last_name}
+                                            <span className={cx('line')}> - </span>
+                                            <span className={cx('day-post')}>
+                                                {/* {video?.updated_at && <DateConvert day={video?.updated_at} />} */}
+                                                {video?.updated_at && DateConvert(video?.updated_at)}
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            {/* </HeadlessTippy> */}
+                            </Tippyheadless>
                             {/* <Button outline className={cx('fl-btn')}>
                                 Follow
                             </Button> */}
