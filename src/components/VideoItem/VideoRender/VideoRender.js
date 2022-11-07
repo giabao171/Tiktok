@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Video.module.scss';
 import Video from '../../video';
@@ -35,7 +35,7 @@ const VideoRender = ({ src = video, srcImage }) => {
 
     return (
         <div className={cx('wrapper')}>
-            <Video className={cx('video-box')} src={src} type="video/mp4" ref={videoRenderRef} />
+            <Video className={cx('video-box')} src={src} type="video/mp4" ref={videoRenderRef} poster={srcImage} />
             <Image className={cx('image-box')} src={srcImage} ref={imgRef} />
             <VideoControl className={cx('control-wrapper')} ref={videoRenderRef} />
         </div>

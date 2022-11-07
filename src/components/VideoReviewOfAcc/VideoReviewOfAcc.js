@@ -5,12 +5,12 @@ import Button from '~/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import VideoPreviewItem from './VideoPreviewItem/VideoPreviewItem';
-import { useHook } from '~/hooks/useHook';
+// import { useHook } from '~/hooks/useHook';
 
 const cx = classNames.bind(styles);
 
 const VideoReviewOfAcc = ({ userInfo }) => {
-    const { currentListVideo, setcurrentListVideo } = useHook();
+    // const { currentListVideo, setcurrentListVideo } = useHook();
 
     const [videoType, setVideoType] = useState(true);
     const [likeType, setLikeType] = useState(false);

@@ -22,6 +22,7 @@ const Image = forwardRef(
                 onError={handelError}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
+                loading="lazy"
             />
         );
     },

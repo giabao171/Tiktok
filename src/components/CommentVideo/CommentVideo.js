@@ -35,7 +35,6 @@ import CommentItem from './CommnentItem/CommentItem';
 import LoginModal from '~/layouts/components/LoginModal/LoginModal';
 import * as FollowUser from '~/services/Follow/FolowUnFollow';
 
-import HeadlessTippy from '@tippyjs/react/headless';
 const cx = classNames.bind(styles);
 
 const CommentVideo = () => {
@@ -52,7 +51,7 @@ const CommentVideo = () => {
     let navigate = useNavigate();
 
     const [video, setVideo] = useState(null);
-    const [listVideo, setListVideo] = useState(null);
+    const [listVideo, setListVideo] = useState([]);
     const [volumeValue, setVolumeValue] = useState(1);
     const [mutedVolume, setMutedVolume] = useState(false);
     const [currentVideoTime, setCurrentVideoTime] = useState(0);
@@ -65,6 +64,7 @@ const CommentVideo = () => {
     const [numOfComment, setNumOfComment] = useState();
     const [reload, setReload] = useState(false);
     const [followed, setFollowed] = useState();
+    const [page, setPage] = useState(1);
 
     const videoRef = useRef();
 
@@ -81,8 +81,9 @@ const CommentVideo = () => {
                 }
                 if (type === 'suggest') {
                     try {
-                        const result = await videoService.videoService(numpage, 'for-you', currentUser.meta.token);
-                        setListVideo(result);
+                        const result = await videoService.videoService(page, 'for-you', currentUser.meta.token);
+                        setListVideo((prev) => [...prev, ...result]);
+                        // setListVideo(result);
                     } catch (error) {
                         console.log('loi ko lay ddc list');
                     }
@@ -98,8 +99,9 @@ const CommentVideo = () => {
                 }
                 if (type === 'suggest') {
                     try {
-                        const result = await videoService.videoService(numpage, 'for-you');
-                        setListVideo(result);
+                        const result = await videoService.videoService(page, 'for-you');
+                        setListVideo((prev) => [...prev, ...result]);
+                        // setListVideo(result);
                     } catch (error) {
                         console.log('loi ko lay ddc list');
                     }
@@ -108,27 +110,54 @@ const CommentVideo = () => {
         };
 
         fetch();
-    }, [showLogin]);
+    }, [showLogin, page]);
 
     useEffect(() => {
-        const getVideo = async () => {
-            let n = listVideo?.length;
-            for (let i = 0; i < n; ++i) {
-                if (listVideo[i]?.id === Number(idvideo)) {
-                    setVideo(listVideo[i]);
-                    // console.log(listVideo[i]);
-                    setVideoLiked(listVideo[i].is_liked);
-                    setNumOfLiked(listVideo[i].likes_count);
-                    setNumOfComment(listVideo[i].comments_count);
-                    setFollowed(listVideo[i].user.is_followed);
+        if (type === 'comment') {
+            const getVideo = async () => {
+                let n = listVideo?.length;
+                for (let i = 0; i < n; ++i) {
+                    if (listVideo[i]?.id === Number(idvideo)) {
+                        setVideo(listVideo[i]);
+                        // console.log(listVideo[i]);
+                        setVideoLiked(listVideo[i].is_liked);
+                        setNumOfLiked(listVideo[i].likes_count);
+                        setNumOfComment(listVideo[i].comments_count);
+                        setFollowed(listVideo[i].user.is_followed);
+                    }
                 }
-            }
-        };
+            };
 
-        getVideo();
+            getVideo();
+        } else {
+            const getVideo = async () => {
+                let n = listVideo?.length;
+                let kt = false;
+                for (let i = 0; i < n; ++i) {
+                    if (listVideo[i]?.id === Number(idvideo)) {
+                        kt = true;
+                        setVideo(listVideo[i]);
+                        // console.log(listVideo[i]);
+                        setVideoLiked(listVideo[i].is_liked);
+                        setNumOfLiked(listVideo[i].likes_count);
+                        setNumOfComment(listVideo[i].comments_count);
+                        setFollowed(listVideo[i].user.is_followed);
+                        if (i === n - 1) {
+                            setPage((prev) => prev + 1);
+                        }
+                    }
+                }
+                if (kt === false) {
+                    setPage((prev) => prev + 1);
+                }
+            };
+
+            getVideo();
+        }
     }, [listVideo, reload]);
 
-    console.log(video);
+    // console.log(video);
+    // console.log(page);
 
     useEffect(() => {
         const getNextPrevVideo = async () => {
@@ -235,6 +264,7 @@ const CommentVideo = () => {
             navigate(`${config.routes.home}@${nicknamevideo}/${nextVideo.id}/${type}/${numpage}`);
             // navigate(0);
             setReload(!reload);
+            // console.log(page);
         }
         if (typeBtn === 'prev') {
             navigate(`${config.routes.home}@${nicknamevideo}/${prevVideo.id}/${type}/${numpage}`);

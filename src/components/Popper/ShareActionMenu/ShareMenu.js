@@ -5,7 +5,6 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import styles from './ShareActionMenu.module.scss';
 
 import ShareActionItem from './ShareActionItem';
-import Button from '~/Button/Button';
 import Footer from './Footer';
 
 const cx = classNames.bind(styles);

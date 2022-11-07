@@ -5,7 +5,6 @@ import Image from '~/components/images/Image';
 import Button from '~/Button/Button';
 import {
     FlagBlackIcon,
-    FlagIcon,
     HeartPrimaryIcon,
     HeartSolidIcon,
     NextIcon,

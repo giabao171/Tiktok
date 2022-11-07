@@ -90,7 +90,7 @@ const VideoControl = ({ className }, ref) => {
 
     //khi thay đổi volume bằng input
     useEffect(() => {
-        if (volumeValueGlobal != 0.0) {
+        if (volumeValueGlobal !== 0.0) {
             ref.current.volume = volumeValueGlobal;
             ref.current.muted = false;
             setMuted(true);

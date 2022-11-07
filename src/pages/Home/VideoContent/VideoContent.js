@@ -6,6 +6,8 @@ import VideoItem from '~/components/VideoItem';
 import * as videoService from '~/services/videoService';
 import { useHook } from '~/hooks/useHook';
 
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 const cx = classNames.bind(styles);
 
 const VideoContent = ({ className, type }) => {
@@ -19,12 +21,16 @@ const VideoContent = ({ className, type }) => {
                 try {
                     if (currentUser !== null) {
                         const result = await videoService.videoService(page, 'for-you', currentUser.meta.token);
-                        setVideoList(result);
+                        // setVideoList(result);
                         // const result = await videoService.videoService(6);
-                        // setVideoList((prev = []) => [...prev, ...result]);
+
+                        setVideoList((prev = []) => [...prev, ...result]);
                     } else {
                         const result = await videoService.videoService(page, 'for-you');
-                        setVideoList(result);
+                        // setVideoList((prev = []) => [...prev, ...result]);
+                        // setVideoList(result);
+
+                        setVideoList((prev = []) => [...prev, ...result]);
                     }
                 } catch (error) {
                     setVideoList([]);
@@ -36,9 +42,11 @@ const VideoContent = ({ className, type }) => {
                 const fetch = async () => {
                     try {
                         const result = await videoService.videoService(page, 'following', currentUser.meta.token);
-                        setVideoList(result);
+                        // setVideoList(result);
                         // const result = await videoService.videoService(6);
                         // setVideoList((prev = []) => [...prev, ...result]);
+
+                        setVideoList((prev = []) => [...prev, ...result]);
                     } catch (error) {
                         setVideoList([]);
                     }
@@ -46,7 +54,9 @@ const VideoContent = ({ className, type }) => {
                 fetch();
             }
         }
-    }, [currentUser, showLogin]);
+    }, [page]);
+
+    // console.log(page);
 
     // useEffect(() => {
     //     setTimeout(() => {
@@ -65,9 +75,17 @@ const VideoContent = ({ className, type }) => {
 
     return (
         <div className={cx('wrapper', className)}>
-            {videoList?.map((item, index) => (
-                <VideoItem key={index} item={item} curentPage={page} />
-            ))}
+            <InfiniteScroll
+                dataLength={videoList.length}
+                next={() => setPage(page + 1)}
+                hasMore={true}
+                loader={<h4>Loading...</h4>}
+            >
+                {videoList?.map((item, index) => (
+                    <VideoItem key={index} item={item} curentPage={page} />
+                ))}
+            </InfiniteScroll>
+
             {/* <VideoItem srcVideo="https://files.fullstack.edu.vn/f8-tiktok/videos/178-63200ee3995e4.mp4" />
             <VideoItem />
             <VideoItem srcVideo="https://files.fullstack.edu.vn/f8-tiktok/videos/178-63200ee3995e4.mp4" />

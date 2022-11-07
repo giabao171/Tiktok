@@ -9,7 +9,7 @@ import { useHook } from '~/hooks/useHook';
 const cx = classNames.bind(styles);
 
 const DefaultLayout = ({ children }) => {
-    const { marginContentDefault, setmarginContentDefault } = useHook();
+    const { marginContentDefault } = useHook();
     const [style, setStyle] = useState({});
 
     useEffect(() => {
