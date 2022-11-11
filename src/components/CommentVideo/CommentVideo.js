@@ -13,6 +13,7 @@ import {
     PrimaryHeartIcon,
     ShareIcon,
     TagIcon,
+    ThreePointIcon,
     VolumeIcon,
     VolumeMuteIcon,
 } from '../icons/Icons';
@@ -479,9 +480,13 @@ const CommentVideo = () => {
                                     <Button outline large className={cx('btn', 'following')} onClick={handleUnFollow}>
                                         Following
                                     </Button>
-                                ) : (
+                                ) : currentUser.data.id !== video?.user.id ? (
                                     <Button outline large className={cx('btn')} onClick={handleFollow}>
                                         Follow
+                                    </Button>
+                                ) : (
+                                    <Button>
+                                        <ThreePointIcon />
                                     </Button>
                                 )
                             ) : (

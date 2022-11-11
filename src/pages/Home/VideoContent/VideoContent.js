@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 const VideoContent = ({ className, type }) => {
     const [videoList, setVideoList] = useState([]);
     const [page, setPage] = useState(1);
-    const { currentUser, showLogin } = useHook();
+    const { currentUser } = useHook();
 
     useEffect(() => {
         if (type === 'for-you') {
@@ -24,13 +24,13 @@ const VideoContent = ({ className, type }) => {
                         // setVideoList(result);
                         // const result = await videoService.videoService(6);
 
-                        setVideoList((prev = []) => [...prev, ...result]);
+                        setVideoList((prev) => [...prev, ...result]);
                     } else {
                         const result = await videoService.videoService(page, 'for-you');
                         // setVideoList((prev = []) => [...prev, ...result]);
                         // setVideoList(result);
 
-                        setVideoList((prev = []) => [...prev, ...result]);
+                        setVideoList((prev) => [...prev, ...result]);
                     }
                 } catch (error) {
                     setVideoList([]);
@@ -46,7 +46,7 @@ const VideoContent = ({ className, type }) => {
                         // const result = await videoService.videoService(6);
                         // setVideoList((prev = []) => [...prev, ...result]);
 
-                        setVideoList((prev = []) => [...prev, ...result]);
+                        setVideoList((prev) => [...prev, ...result]);
                     } catch (error) {
                         setVideoList([]);
                     }
@@ -54,6 +54,7 @@ const VideoContent = ({ className, type }) => {
                 fetch();
             }
         }
+        // eslint-disable-next-line
     }, [page]);
 
     // console.log(page);
@@ -77,7 +78,9 @@ const VideoContent = ({ className, type }) => {
         <div className={cx('wrapper', className)}>
             <InfiniteScroll
                 dataLength={videoList.length}
-                next={() => setPage(page + 1)}
+                next={() => {
+                    setPage(page + 1);
+                }}
                 hasMore={true}
                 loader={<h4>Loading...</h4>}
             >

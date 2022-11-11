@@ -47,6 +47,7 @@ const ProfileContent = () => {
     // useEffect(() => {
     //     setFollowed(userInfo?.is_followed);
     // }, []);
+    // console.log(currentUser);
 
     const handleUnFollow = () => {
         try {
@@ -85,13 +86,23 @@ const ProfileContent = () => {
                         </div>
                         <p>{userInfo.first_name + ` ` + userInfo.last_name}</p>
                         {currentUser !== null ? (
-                            userInfo.is_followed === false ? (
+                            userInfo.is_followed === false && currentUser.data.id !== userInfo?.id ? (
                                 <Button primary large className={cx('btn')} onClick={handleFollow}>
                                     Follow
                                 </Button>
-                            ) : (
+                            ) : userInfo.is_followed === true && currentUser.data.id !== userInfo?.id ? (
                                 <Button outline large className={cx('btn')} onClick={handleUnFollow}>
                                     Following
+                                </Button>
+                            ) : (
+                                <Button
+                                    rounded
+                                    square
+                                    className={cx('btn')}
+                                    leftIcon={<EditProfileIcon />}
+                                    onClick={() => setShowEditProfile(true)}
+                                >
+                                    Edit profile
                                 </Button>
                             )
                         ) : (

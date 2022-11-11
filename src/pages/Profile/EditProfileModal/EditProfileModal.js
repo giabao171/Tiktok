@@ -73,7 +73,8 @@ const EditProfileModal = ({ setShowEditProfile }) => {
     const handleSubmit = async () => {
         try {
             userProfile.edit(userInfoEdit, currentUser.meta.token);
-            navigate(0);
+            navigate(`${config.routes.home}@${currentUser.data.nickname}`);
+            setShowEditProfile(false);
         } catch (error) {
             console.log(error);
         }
