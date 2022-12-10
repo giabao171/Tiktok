@@ -6,14 +6,13 @@ import GlobalStyles from './components/GlobalStyles/GlobalStyles';
 import { Global } from './store/Provider';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <GlobalStyles>
-            <Global>
-                <App />
-            </Global>
-        </GlobalStyles>
-        ,
-    </React.StrictMode>,
+    // <React.StrictMode>
+    <GlobalStyles>
+        <Global>
+            <App />
+        </Global>
+    </GlobalStyles>,
+    // </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

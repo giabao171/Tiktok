@@ -44,9 +44,11 @@ const CommentItem = ({ idvideo, commentPosted, setNumOfComment, userPostId }) =>
     useEffect(() => {
         const getCommentList = async () => {
             try {
-                const res = await GetComment.get(idvideo, commentPage, currentUser.meta.token);
-                // setListComment([...listComment, ...res.data]);
-                setListComment(res.data);
+                if (!!currentUser != false) {
+                    const res = await GetComment.get(idvideo, commentPage, currentUser.meta.token);
+                    // setListComment([...listComment, ...res.data]);
+                    setListComment(res.data);
+                }
             } catch (error) {
                 console.log(error);
             }
